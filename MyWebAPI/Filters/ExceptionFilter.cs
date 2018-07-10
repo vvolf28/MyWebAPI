@@ -36,12 +36,12 @@ namespace MyWebAPI.Filters
         }
 
 
-        private void LoggerException(HttpActionExecutedContext context)
+        private void LoggerException(HttpActionExecutedContext actionExecutedContext)
         {
-            var info = $"接口: {FilterUtils.GetActionFullName(context.ActionContext)}{Environment.NewLine}输入参数: {JsonEx.ToJson(context.ActionContext.ActionArguments)}";
-            Logger.Error(info, context.Exception);
-            var result = new ResultModel<Exception>(context.Exception);
-            context.Response = context.Request.CreateResponse(HttpStatusCode.OK, result);
+            var info = $"接口: {FilterUtils.GetActionFullName(actionExecutedContext.ActionContext)}{Environment.NewLine}输入参数: {JsonEx.ToJson(actionExecutedContext.ActionContext.ActionArguments)}";
+            Logger.Error(info, actionExecutedContext.Exception);
+            var result = new ResultModel<Exception>(actionExecutedContext.Exception);
+            actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(HttpStatusCode.OK, result);
         }
     }
 }

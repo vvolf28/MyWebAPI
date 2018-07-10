@@ -39,7 +39,7 @@ namespace MyWebAPI.Models
             else
             {
                 this.IsSuccess = true;
-                this.Data = data;
+                this.Data = data ;
             }
         }
     }

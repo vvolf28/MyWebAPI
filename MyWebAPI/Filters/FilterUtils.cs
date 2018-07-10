@@ -36,9 +36,9 @@ namespace MyWebAPI.Filters
         /// </summary>
         /// <param name="actionExecutedContext"></param>
         /// <returns></returns>
-        public static string GetRequestArgs(HttpActionExecutedContext actionExecutedContext)
+        public static string GetRequestArgsJson(HttpActionExecutedContext actionExecutedContext)
         {
-            return GetRequestArgs(actionExecutedContext.ActionContext);
+            return GetRequestArgsJson(actionExecutedContext.ActionContext);
         }
 
         /// <summary>
@@ -46,28 +46,21 @@ namespace MyWebAPI.Filters
         /// </summary>
         /// <param name="actionContext"></param>
         /// <returns></returns>
-        public static string GetRequestArgs(HttpActionContext actionContext)
+        public static string GetRequestArgsJson(HttpActionContext actionContext)
         {
             return JsonEx.ToJson(actionContext.ActionArguments);
         }
         
 
-        public static string GetResponseData(HttpActionExecutedContext actionExecutedContext)
+        public static object GetResponseContent(HttpActionExecutedContext actionExecutedContext)
         {
-            return GetResponseData(actionExecutedContext.ActionContext);
+            return GetResponseContent(actionExecutedContext.ActionContext);
         }
 
 
-        public static string GetResponseData(HttpActionContext actionContext)
+        public static object GetResponseContent(HttpActionContext actionContext)
         {
-            object data = null;
-            if (actionContext.Response.Content != null)
-            {
-                data = actionContext.Response.Content.ReadAsAsync<object>().Result;
-            }
-
-            var result = new ResultModel<object>(data);
-            return JsonEx.ToJson(result);
+            return actionContext.Response.Content?.ReadAsAsync<object>().Result;
         }
     }
 }

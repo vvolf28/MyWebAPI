@@ -21,11 +21,33 @@ namespace MyWebAPI.Controllers
 
 
         /// <summary>
+        /// 测试GetEmpty
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public void GetEmpty()
+        {
+            
+        }
+
+
+
+        /// <summary>
         /// 测试Post
         /// </summary>
         /// <returns></returns>
         [HttpPost]
         public void PostUser([FromBody]string value)
+        {
+        }
+
+
+        /// <summary>
+        /// 测试无参数Post方法
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public void PostNoArgs()
         {
         }
 
