@@ -50,14 +50,22 @@ namespace MyWebAPI.Filters
         {
             return JsonEx.ToJson(actionContext.ActionArguments);
         }
-        
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
+        /// <returns></returns>
         public static object GetResponseContent(HttpActionExecutedContext actionExecutedContext)
         {
             return GetResponseContent(actionExecutedContext.ActionContext);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="actionContext"></param>
+        /// <returns></returns>
         public static object GetResponseContent(HttpActionContext actionContext)
         {
             return actionContext.Response.Content?.ReadAsAsync<object>().Result;

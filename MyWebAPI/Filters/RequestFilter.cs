@@ -21,16 +21,5 @@ namespace MyWebAPI.Filters
         {
             base.OnActionExecuting(actionContext);
         }
-
-        ///// <summary>
-        ///// 重写调用前请求(异步)
-        ///// </summary>
-        ///// <param name="actionContext"></param>
-        ///// <param name="cancellationToken"></param>
-        ///// <returns></returns>
-        //public override Task OnActionExecutingAsync(HttpActionContext actionContext, CancellationToken cancellationToken)
-        //{
-        //    return base.OnActionExecutingAsync(actionContext, cancellationToken);
-        //}
     }
 }

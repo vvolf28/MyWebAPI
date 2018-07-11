@@ -125,7 +125,6 @@
     <Compile Include="Filters\FilterUtils.cs" />
     <Compile Include="Filters\JsonEx.cs" />
     <Compile Include="Filters\Logger.cs" />
-    <Compile Include="Filters\LogInfoHandle.cs" />
     <Compile Include="Filters\ResponseFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
