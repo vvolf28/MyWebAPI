@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace MyWebAPI.Models
 {
@@ -29,17 +26,21 @@ namespace MyWebAPI.Models
         public T Data { get; set; }
 
         
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="data"></param>
         public ResultModel(T data)
         {
             if(data is Exception)
             {
-                this.IsSuccess = false;
-                this.Error = (data as Exception).Message;
+                IsSuccess = false;
+                Error = (data as Exception).Message;
             }
             else
             {
-                this.IsSuccess = true;
-                this.Data = data ;
+                IsSuccess = true;
+                Data = data ;
             }
         }
     }

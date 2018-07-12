@@ -19,7 +19,7 @@ namespace MyWebAPI.Filters
         /// <param name="actionContext"></param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            base.OnActionExecuting(actionContext);
+            
         }
     }
 }

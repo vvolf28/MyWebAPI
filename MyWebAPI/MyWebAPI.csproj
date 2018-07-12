@@ -120,6 +120,7 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Filters\ApiSecurityFilter.cs" />
     <Compile Include="Filters\ExceptionFilter.cs" />
     <Compile Include="Filters\RequestFilter.cs" />
     <Compile Include="Filters\FilterUtils.cs" />

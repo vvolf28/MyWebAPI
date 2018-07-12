@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace MyWebAPI.Filters
 {
+    /// <summary>
+    /// Json操作类
+    /// </summary>
     public class JsonEx
     {
         private static readonly JsonSerializerSettings m_JsonSetting = new JsonSerializerSettings()

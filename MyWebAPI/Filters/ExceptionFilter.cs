@@ -19,18 +19,22 @@ namespace MyWebAPI.Filters
         {
             ReWriteResponseContent(actionExecutedContext);
             LoggerExceptionInfo(actionExecutedContext);
-
-            base.OnException(actionExecutedContext);
         }
 
-
+        /// <summary>
+        /// 重写输出流内容
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
         private void ReWriteResponseContent(HttpActionExecutedContext actionExecutedContext)
         {
             var result = new ResultModel<Exception>(actionExecutedContext.Exception);
             actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-
+        /// <summary>
+        /// 记录异常日志
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
         private void LoggerExceptionInfo(HttpActionExecutedContext actionExecutedContext)
         {
             var actionName = FilterUtils.GetActionFullName(actionExecutedContext);

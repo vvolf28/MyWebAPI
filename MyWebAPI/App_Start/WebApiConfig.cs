@@ -7,8 +7,15 @@ using System.Web.Http;
 
 namespace MyWebAPI
 {
+    /// <summary>
+    /// api配置
+    /// </summary>
     public static class WebApiConfig
     {
+        /// <summary>
+        /// Web API 配置和服务注册
+        /// </summary>
+        /// <param name="config"></param>
         public static void Register(HttpConfiguration config)
         {
             // Web API 配置和服务
@@ -29,6 +36,7 @@ namespace MyWebAPI
             #region 注册全局过滤器
             //RequestFilter暂不使用。出入参数统一由ResponseFilter进行处理
             //config.Filters.Add(new RequestFilter()); 
+
             config.Filters.Add(new ExceptionFilter());
             config.Filters.Add(new ResponseFilter());
             #endregion

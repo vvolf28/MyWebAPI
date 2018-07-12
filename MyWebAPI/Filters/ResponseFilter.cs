@@ -1,5 +1,6 @@
 ﻿using MyWebAPI.Models;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Web.Http.Filters;
 
@@ -20,24 +21,30 @@ namespace MyWebAPI.Filters
 
             var result = ReWriteResponseContent(actionExecutedContext);
             LoggerActionExecInfo(actionExecutedContext, result);
-
-            base.OnActionExecuted(actionExecutedContext);
         }
 
-
+        /// <summary>
+        /// 重写输出流内容
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
+        /// <returns></returns>
         private ResultModel<object> ReWriteResponseContent(HttpActionExecutedContext actionExecutedContext)
         {
             var data = FilterUtils.GetResponseContent(actionExecutedContext);
             var result = new ResultModel<object>(data);
 
             var status = actionExecutedContext.ActionContext.Response.StatusCode;
-            if (status == System.Net.HttpStatusCode.NoContent) status = System.Net.HttpStatusCode.OK;
+            if (status == HttpStatusCode.NoContent) status = HttpStatusCode.OK;
             actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(status, result);
 
             return result;
         }
 
-
+        /// <summary>
+        /// 记录API请求日志
+        /// </summary>
+        /// <param name="actionExecutedContext"></param>
+        /// <param name="result"></param>
         private void LoggerActionExecInfo(HttpActionExecutedContext actionExecutedContext, ResultModel<object> result)
         {
             var actionName = FilterUtils.GetActionFullName(actionExecutedContext);
