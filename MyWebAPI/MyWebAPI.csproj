@@ -120,13 +120,26 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\TestController.cs" />
-    <Compile Include="Filters\ApiSecurityFilter.cs" />
     <Compile Include="Filters\ExceptionFilter.cs" />
     <Compile Include="Filters\RequestFilter.cs" />
     <Compile Include="Filters\FilterUtils.cs" />
     <Compile Include="Filters\JsonEx.cs" />
     <Compile Include="Filters\Logger.cs" />
     <Compile Include="Filters\ResponseFilter.cs" />
+    <Compile Include="Filters\Security\ApiSecurityFilter.cs" />
+    <Compile Include="Filters\Security\DefaultHandle\DefaultCallFrequency.cs" />
+    <Compile Include="Filters\Security\DefaultHandle\DefaultIpAddress.cs" />
+    <Compile Include="Filters\Security\DefaultHandle\DefaultRegister.cs" />
+    <Compile Include="Filters\Security\DefaultHandle\DefaultSecurity.cs" />
+    <Compile Include="Filters\Security\DefaultHandle\DefaultTimeStamp.cs" />
+    <Compile Include="Filters\Security\Entity\RegisterInfo.cs" />
+    <Compile Include="Filters\Security\Entity\SecurityRequestInfo.cs" />
+    <Compile Include="Filters\Security\Interface\ICallFrequency.cs" />
+    <Compile Include="Filters\Security\Interface\IIpAddress.cs" />
+    <Compile Include="Filters\Security\Interface\IRegister.cs" />
+    <Compile Include="Filters\Security\Interface\ISecurity.cs" />
+    <Compile Include="Filters\Security\Interface\ITimeStamp.cs" />
+    <Compile Include="Filters\Security\ValidateFactory.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

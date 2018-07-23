@@ -35,7 +35,7 @@ namespace MyWebAPI.Models
             if(data is Exception)
             {
                 IsSuccess = false;
-                Error = (data as Exception).Message;
+                Error = (data as Exception)?.Message;
             }
             else
             {
