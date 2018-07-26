@@ -1,10 +1,5 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web.Http.Controllers;
+﻿using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
-using MyWebAPI.Models;
 
 namespace MyWebAPI.Filters
 {
@@ -16,10 +11,10 @@ namespace MyWebAPI.Filters
         /// <summary>
         /// 重写调用前请求(同步)
         /// </summary>
-        /// <param name="actionContext"></param>
+        /// <param name="actionContext">请求上下文</param>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            
+            //不预处理
         }
     }
 }

@@ -12,10 +12,21 @@ using System.Web.Http.Controllers;
 
 namespace MyWebAPI.Filters.Security.DefaultHandle
 {
+    /// <summary>
+    /// 默认安全认证
+    /// </summary>
     public class DefaultSecurity : ISecurity
     {
+        /// <summary>
+        /// 字符集
+        /// </summary>
         private static readonly Encoding m_Encoding = Encoding.UTF8;
 
+        /// <summary>
+        /// 获取安全认证信息
+        /// </summary>
+        /// <param name="context">请求上下文</param>
+        /// <returns>安全认证信息实体</returns>
         public SecurityRequestInfo GetSecurityInfo(HttpActionContext context)
         {
             var result = new SecurityRequestInfo
@@ -29,24 +40,36 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
             return result;
         }
 
-
+        /// <summary>
+        /// 验证安全信息是否合法
+        /// </summary>
+        /// <param name="securityInfo">安全信息实体</param>
+        /// <param name="registerInfo">注册信息实体</param>
         public void Validate(SecurityRequestInfo securityInfo, RegisterInfo registerInfo)
         {
-            this.ValidateHttpHeader(securityInfo);
+            this.ValidateSecurityInfo(securityInfo);
             var content = $"{securityInfo.AppId}{securityInfo.TimeStamp}{securityInfo.RequestContent}{registerInfo.AppSecret}";
             var sign = GetMD5(content);
             if (sign != securityInfo.Signature) throw new Exception("签名验证错误!");
         }
 
-
-        private void ValidateHttpHeader(SecurityRequestInfo securityInfo)
+        /// <summary>
+        /// 验证安全信息数据完整性
+        /// </summary>
+        /// <param name="securityInfo">安全信息实体</param>
+        private void ValidateSecurityInfo(SecurityRequestInfo securityInfo)
         {
             if (string.IsNullOrWhiteSpace(securityInfo.AppId)) throw new ArgumentNullException("AppId不可为空!", nameof(securityInfo.AppId));
             if (string.IsNullOrWhiteSpace(securityInfo.Signature)) throw new ArgumentNullException("签名不可为空!", nameof(securityInfo.Signature));
             if (string.IsNullOrWhiteSpace(securityInfo.TimeStamp)) throw new ArgumentNullException("时间戳不可为空!", nameof(securityInfo.TimeStamp));
         }
 
-
+        /// <summary>
+        /// 根据名称，从请求头中获取对应数据
+        /// </summary>
+        /// <param name="headers">请求头</param>
+        /// <param name="name">名称</param>
+        /// <returns>请求头中名称对应的值</returns>
         private string GetHeaderVaule(HttpRequestHeaders headers, string name)
         {
             if (headers == null) return string.Empty;
@@ -60,6 +83,11 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
 
 
         #region 【获取请求数据】
+        /// <summary>
+        /// 获取请求数据
+        /// </summary>
+        /// <param name="context">请求上下文</param>
+        /// <returns>数据内容</returns>
         private string GetRequestData(HttpActionContext context)
         {
             if (context.Request.Method == HttpMethod.Post) return this.GetPostData(context);
@@ -68,13 +96,21 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
             throw new Exception("请求类型错误!");
         }
 
-
+        /// <summary>
+        /// 获取Post请求数据
+        /// </summary>
+        /// <param name="context">请求上下文</param>
+        /// <returns>Post请求数据,字符串格式</returns>
         private string GetPostData(HttpActionContext context)
         {
             return context.Request.Content.ReadAsStringAsync().Result;
         }
 
-
+        /// <summary>
+        /// 获取Get数据(Url)
+        /// </summary>
+        /// <param name="context">请求上下文</param>
+        /// <returns>Get请求数据，字符串格式</returns>
         private string GetUrlData(HttpActionContext context)
         {
             var request = ((HttpContextWrapper)context.Request.Properties["MS_HttpContext"]).Request;

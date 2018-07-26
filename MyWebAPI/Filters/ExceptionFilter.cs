@@ -7,14 +7,14 @@ using System.Web.Http.Filters;
 namespace MyWebAPI.Filters
 {
     /// <summary>
-    /// 异常拦截器
+    /// 全局异常拦截器
     /// </summary>
     public class ExceptionFilter : ExceptionFilterAttribute
     {
         /// <summary>
         /// 重写异常处理机制(同步)
         /// </summary>
-        /// <param name="actionExecutedContext"></param>
+        /// <param name="actionExecutedContext">执行的上下文的操作</param>
         public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
             ReWriteResponseContent(actionExecutedContext);
@@ -24,7 +24,7 @@ namespace MyWebAPI.Filters
         /// <summary>
         /// 重写输出流内容
         /// </summary>
-        /// <param name="actionExecutedContext"></param>
+        /// <param name="actionExecutedContext">执行的上下文的操作</param>
         private void ReWriteResponseContent(HttpActionExecutedContext actionExecutedContext)
         {
             var result = new ResultModel<Exception>(actionExecutedContext.Exception);
@@ -34,7 +34,7 @@ namespace MyWebAPI.Filters
         /// <summary>
         /// 记录异常日志
         /// </summary>
-        /// <param name="actionExecutedContext"></param>
+        /// <param name="actionExecutedContext">执行的上下文的操作</param>
         private void LoggerExceptionInfo(HttpActionExecutedContext actionExecutedContext)
         {
             var actionName = FilterUtils.GetActionFullName(actionExecutedContext);

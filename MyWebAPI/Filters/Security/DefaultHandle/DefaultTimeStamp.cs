@@ -3,10 +3,20 @@ using System;
 
 namespace MyWebAPI.Filters.Security.DefaultHandle
 {
+    /// <summary>
+    /// 默认时间戳验证
+    /// </summary>
     public class DefaultTimeStamp : ITimeStamp
     {
-        private static int m_OverTimeForMinute = 5;
+        /// <summary>
+        /// 超时时间(分钟)
+        /// </summary>
+        private static int m_OverTimeForMinute = 2;
         
+        /// <summary>
+        /// 验证时间戳是否超时
+        /// </summary>
+        /// <param name="timeStamp">时间戳</param>
         public void Validate(string timeStamp)
         {
             if (string.IsNullOrWhiteSpace(timeStamp)) throw new ArgumentNullException("时间戳数据为空!", nameof(timeStamp));

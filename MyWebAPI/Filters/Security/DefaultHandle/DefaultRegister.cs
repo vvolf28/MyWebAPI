@@ -8,14 +8,23 @@ using System.Web;
 
 namespace MyWebAPI.Filters.Security.DefaultHandle
 {
+    /// <summary>
+    /// 默认注册信息操作
+    /// </summary>
     public class DefaultRegister : IRegister
     {
+        /// <summary>
+        /// 注册信息缓存
+        /// </summary>
         private Dictionary<string, RegisterInfo> m_Cache;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public DefaultRegister()
         {
             var cfgPath = HttpContext.Current.Server.MapPath("~/App_Data\\RegisterInfo.json");
-            if (!File.Exists(cfgPath)) throw new Exception("配置文件不存在或路径错误!");
+            if (!File.Exists(cfgPath)) throw new Exception("配置文件不存在或文件路径错误!");
 
             var registerInfos = JsonEx.FromJson<List<RegisterInfo>>(File.ReadAllText(cfgPath));
 
@@ -29,7 +38,11 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
             }
         }
 
-
+        /// <summary>
+        /// 获取注册信息
+        /// </summary>
+        /// <param name="appId">注册Id</param>
+        /// <returns>注册信息实体</returns>
         public RegisterInfo GetRegister(string appId)
         {
             var isGet = m_Cache.TryGetValue(appId, out RegisterInfo data);

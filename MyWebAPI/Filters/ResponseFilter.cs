@@ -14,7 +14,7 @@ namespace MyWebAPI.Filters
         /// <summary>
         /// 重写调用后请求(同步)
         /// </summary>
-        /// <param name="actionExecutedContext"></param>
+        /// <param name="actionExecutedContext">请求上下文操作</param>
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
             if (actionExecutedContext.Exception != null) return;
@@ -26,8 +26,8 @@ namespace MyWebAPI.Filters
         /// <summary>
         /// 重写输出流内容
         /// </summary>
-        /// <param name="actionExecutedContext"></param>
-        /// <returns></returns>
+        /// <param name="actionExecutedContext">请求上下文操作</param>
+        /// <returns>统一返回值对象</returns>
         private ResultModel<object> ReWriteResponseContent(HttpActionExecutedContext actionExecutedContext)
         {
             var data = FilterUtils.GetResponseContent(actionExecutedContext);
@@ -43,8 +43,8 @@ namespace MyWebAPI.Filters
         /// <summary>
         /// 记录API请求日志
         /// </summary>
-        /// <param name="actionExecutedContext"></param>
-        /// <param name="result"></param>
+        /// <param name="actionExecutedContext">请求上下文操作</param>
+        /// <param name="result">请求返回值</param>
         private void LoggerActionExecInfo(HttpActionExecutedContext actionExecutedContext, ResultModel<object> result)
         {
             var actionName = FilterUtils.GetActionFullName(actionExecutedContext);

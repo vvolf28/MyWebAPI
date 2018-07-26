@@ -1,7 +1,14 @@
 ﻿namespace MyWebAPI.Filters.Security.Entity
 {
+    /// <summary>
+    /// 请求安全信息
+    /// </summary>
     public class SecurityRequestInfo
     {
+        /// <summary>
+        /// 应用Id
+        /// </summary>
+        /// <remarks>Guid格式</remarks>
         public string AppId { get; set; }
 
         /// <summary>

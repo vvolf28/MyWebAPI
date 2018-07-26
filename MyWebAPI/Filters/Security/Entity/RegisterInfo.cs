@@ -2,10 +2,13 @@
 
 namespace MyWebAPI.Filters.Security.Entity
 {
+    /// <summary>
+    /// 应用注册信息
+    /// </summary>
     public class RegisterInfo
     {
         /// <summary>
-        /// 注册Id
+        /// 应用Id
         /// </summary>
         public string AppId { get; set; }
 
@@ -16,7 +19,7 @@ namespace MyWebAPI.Filters.Security.Entity
 
 
         /// <summary>
-        /// 授权Ip列表
+        /// 授权访问Ip列表
         /// </summary>
         public List<string> AccessIpList { get; set; }
     }
