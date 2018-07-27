@@ -116,7 +116,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <returns>Post请求数据,字符串格式</returns>
         private string GetPostData(HttpActionContext context)
         {
-            return context.Request.Content.ReadAsStringAsync().Result;
+            return context.Request.Content?.ReadAsStringAsync().Result;
         }
 
         /// <summary>
