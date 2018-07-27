@@ -12,6 +12,27 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
     public class DefaultIpAddress : IIpAddress
     {
         /// <summary>
+        /// 获取Ip方法列表
+        /// </summary>
+        private IList<Func<string>> m_HandleList;
+
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        public DefaultIpAddress()
+        {
+            m_HandleList = new List<Func<string>>()
+            {
+                GetClientIpWithProxy,
+                GetClientIpWithoutProxy,
+                GetClientIpByUserHost,
+                GetClientIpByDefault,
+            };
+        }
+
+
+        /// <summary>
         /// 验证Ip是否合法
         /// </summary>
         /// <param name="accessIpList">授权Ip地址列表</param>
@@ -31,15 +52,23 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <returns>请求者的Ip地址字符串格式</returns>
         private string GetRealRequestIp()
         {
-            var clientIp = GetClientIpHandle(GetClientIpWithProxy);
-            if (string.IsNullOrWhiteSpace(clientIp)) clientIp = GetClientIpHandle(GetClientIpWithoutProxy);
-            if (string.IsNullOrWhiteSpace(clientIp)) clientIp = GetClientIpHandle(GetClientIpByUserHost);
-            if (string.IsNullOrWhiteSpace(clientIp)) clientIp = "127.0.0.1";
+            var clientIp = string.Empty;
+
+            foreach(var handle in m_HandleList)
+            {
+                clientIp = GetClientIpHandle(handle);
+                if (!string.IsNullOrWhiteSpace(clientIp)) break;
+            }
 
             return clientIp;
         }
 
 
+        /// <summary>
+        /// 获取Ip地址代理
+        /// </summary>
+        /// <param name="getHandle"></param>
+        /// <returns></returns>
         private string GetClientIpHandle(Func<string> getHandle)
         {
             var clientIp = getHandle();
@@ -124,6 +153,16 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         private string GetClientIpByUserHost()
         {
             return HttpContext.Current.Request.UserHostAddress;
+        }
+
+
+        /// <summary>
+        /// 获取默认Ip地址
+        /// </summary>
+        /// <returns></returns>
+        private string GetClientIpByDefault()
+        {
+            return "127.0.0.1";
         }
 
 

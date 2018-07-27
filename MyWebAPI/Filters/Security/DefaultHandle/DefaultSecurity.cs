@@ -88,10 +88,11 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
             if (headers == null) return string.Empty;
 
             var isExists = headers.TryGetValues(name, out IEnumerable<string> values);
-            if (!isExists) return string.Empty;
 
-            var tmp = values.ToList();
-            return tmp.Count == 1 ? tmp[0] : string.Empty;
+            if (!isExists) return string.Empty;
+            if (values.Count() > 1) throw new ArgumentException("HttpHead对应名称存在多个值!", name);
+
+            return values?.First();
         }
 
 
