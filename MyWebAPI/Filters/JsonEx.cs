@@ -6,12 +6,12 @@ namespace MyWebAPI.Filters
     /// <summary>
     /// Json操作类
     /// </summary>
-    public class JsonEx
+    public static class JsonEx
     {
         /// <summary>
         /// Json格式: 默认为驼峰格式
         /// </summary>
-        private static readonly JsonSerializerSettings m_JsonSetting = new JsonSerializerSettings()
+        private static readonly JsonSerializerSettings s_JsonSetting = new JsonSerializerSettings()
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
         };
@@ -24,7 +24,7 @@ namespace MyWebAPI.Filters
         /// <returns>对象Json序列化后生成的Json字符串</returns>
         public static string ToJson<T>(T obj)
         {
-            return JsonConvert.SerializeObject(obj, m_JsonSetting);
+            return JsonConvert.SerializeObject(obj, s_JsonSetting);
         }
 
 
@@ -36,7 +36,7 @@ namespace MyWebAPI.Filters
         /// <returns>反序列化后的对象</returns>
         public static T FromJson<T>(string jsonStr)
         {
-            return JsonConvert.DeserializeObject<T>(jsonStr, m_JsonSetting);
+            return JsonConvert.DeserializeObject<T>(jsonStr, s_JsonSetting);
         }
     }
 }

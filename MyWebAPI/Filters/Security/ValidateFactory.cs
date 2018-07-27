@@ -1,12 +1,11 @@
-﻿using MyWebAPI.Filters.Security.DefaultHandle;
-using MyWebAPI.Filters.Security.Interface;
+﻿using MyWebAPI.Filters.Security.Interface;
 
 namespace MyWebAPI.Filters.Security
 {
     /// <summary>
     /// 安全认证实例工厂
     /// </summary>
-    public class ValidateFactory
+    public static class ValidateFactory
     {
         /// <summary>
         /// 调用频率接口实例
@@ -16,7 +15,7 @@ namespace MyWebAPI.Filters.Security
         /// <summary>
         /// 授权Ip地址接口实例
         /// </summary>
-        public static IIpAddress IpAddressInstance { get; private set; }
+        public static IIPAddress IPAddressInstance { get; private set; }
 
         /// <summary>
         /// 注册信息接口实例
@@ -39,7 +38,7 @@ namespace MyWebAPI.Filters.Security
         static ValidateFactory()
         {
             CallFrequencyInstance = new DefaultCallFrequency();
-            IpAddressInstance = new DefaultIpAddress();
+            IPAddressInstance = new DefaultIPAddress();
             RegisterInstance = new DefaultRegister();
             SecurityInstance = new DefaultSecurity();
             TimeStampInstance = new DefaultTimeStamp();

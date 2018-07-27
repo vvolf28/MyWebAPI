@@ -1,6 +1,4 @@
-﻿using MyWebAPI.Filters.Security.Entity;
-
-namespace MyWebAPI.Filters.Security.Interface
+﻿namespace MyWebAPI.Filters.Security.Interface
 {
     /// <summary>
     /// 注册信息操作

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MyWebAPI.Filters.Security.Entity
+namespace MyWebAPI.Filters.Security
 {
     /// <summary>
     /// 应用注册信息
@@ -21,6 +21,6 @@ namespace MyWebAPI.Filters.Security.Entity
         /// <summary>
         /// 授权访问Ip列表
         /// </summary>
-        public List<string> AccessIpList { get; set; }
+        public IList<string> AccessIPList { get; }
     }
 }

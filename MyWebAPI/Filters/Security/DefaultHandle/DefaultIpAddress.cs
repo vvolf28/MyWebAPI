@@ -4,45 +4,36 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace MyWebAPI.Filters.Security.DefaultHandle
+namespace MyWebAPI.Filters.Security
 {
     /// <summary>
     /// 默认授权Ip地址验证
     /// </summary>
-    public class DefaultIpAddress : IIpAddress
+    public class DefaultIPAddress : IIPAddress
     {
         /// <summary>
         /// 获取Ip方法列表
         /// </summary>
-        private IList<Func<string>> m_HandleList;
-
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        public DefaultIpAddress()
-        {
-            m_HandleList = new List<Func<string>>()
+        private static readonly IList<Func<string>> s_HandleList = new List<Func<string>>()
             {
                 GetClientIpWithProxy,
                 GetClientIpWithoutProxy,
                 GetClientIpByUserHost,
                 GetClientIpByDefault,
             };
-        }
 
 
         /// <summary>
         /// 验证Ip是否合法
         /// </summary>
-        /// <param name="accessIpList">授权Ip地址列表</param>
-        public void Validate(List<string> accessIpList)
+        /// <param name="accessIPList">授权Ip地址列表</param>
+        public void Validate(IList<string> accessIPList)
         {
             //访问控制列表为空时，默认为不做ip校验
-            if (accessIpList == null || accessIpList.Count == 0) return;
+            if (accessIPList == null || accessIPList.Count == 0) return;
 
             var ip = GetRealRequestIp();
-            if (!accessIpList.Contains(ip)) throw new Exception("非法Ip地址访问!");
+            if (!accessIPList.Contains(ip)) throw new ArgumentException("非法Ip地址访问!");
         }
 
 
@@ -50,11 +41,11 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// 获取真实请求来源的Ip地址
         /// </summary>
         /// <returns>请求者的Ip地址字符串格式</returns>
-        private string GetRealRequestIp()
+        private static string GetRealRequestIp()
         {
             var clientIp = string.Empty;
 
-            foreach(var handle in m_HandleList)
+            foreach (var handle in s_HandleList)
             {
                 clientIp = GetClientIpHandle(handle);
                 if (!string.IsNullOrWhiteSpace(clientIp)) break;
@@ -69,7 +60,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// </summary>
         /// <param name="getHandle"></param>
         /// <returns></returns>
-        private string GetClientIpHandle(Func<string> getHandle)
+        private static string GetClientIpHandle(Func<string> getHandle)
         {
             var clientIp = getHandle();
             if (IsIpAddress(clientIp))
@@ -107,7 +98,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         ///        HTTP_VIA = 没数值或不显示
         ///        HTTP_X_FORWARDED_FOR = 没数值或不显示(完全用代理服务器的信息替代了客户端的所有信息，就象就是完全使用那台代理服务器直接访问对象)
         /// </remarks>
-        private string GetClientIpWithProxy()
+        private static string GetClientIpWithProxy()
         {
             if (string.IsNullOrWhiteSpace(GetRequestServerVariable(HttpHeadString.VIA))) return string.Empty;
             var ipListStr = GetRequestServerVariable(HttpHeadString.X_FORWARDED_FOR);
@@ -130,9 +121,9 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         ///     HTTP_VIA = 没数值或不显示
         ///     HTTP_X_FORWARDED_FOR = 没数值或不显示
         /// </remarks>
-        private string GetClientIpWithoutProxy()
+        private static string GetClientIpWithoutProxy()
         {
-           return GetRequestServerVariable(HttpHeadString.REMOTE_ADDR);
+            return GetRequestServerVariable(HttpHeadString.REMOTE_ADDR);
         }
 
 
@@ -140,17 +131,17 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// 使用CDN后获取客户IP
         /// </summary>
         /// <returns></returns>
-        private string GetClientIpByCNDSRC()
+        private static string GetClientIpByCNDSRC()
         {
             return GetRequestServerVariable(HttpHeadString.CDN_SRC_IP);
         }
-        
+
 
         /// <summary>
         /// 从UserHostAddress获取客户IP
         /// </summary>
         /// <returns></returns>
-        private string GetClientIpByUserHost()
+        private static string GetClientIpByUserHost()
         {
             return HttpContext.Current.Request.UserHostAddress;
         }
@@ -160,7 +151,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// 获取默认Ip地址
         /// </summary>
         /// <returns></returns>
-        private string GetClientIpByDefault()
+        private static string GetClientIpByDefault()
         {
             return "127.0.0.1";
         }
@@ -171,7 +162,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// </summary>
         /// <param name="varName">环境变量名称</param>
         /// <returns></returns>
-        private string GetRequestServerVariable(string varName)
+        private static string GetRequestServerVariable(string varName)
         {
             return HttpContext.Current.Request.ServerVariables[varName];
         }
@@ -182,7 +173,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// </summary>
         /// <param name="ip">ip地址</param>
         /// <returns>是否是Ip地址</returns>
-        private bool IsIpAddress(string ip)
+        private static bool IsIpAddress(string ip)
         {
             return Regex.IsMatch(ip, @"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$");
         }
@@ -193,10 +184,15 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// </summary>
         class HttpHeadString
         {
-            public static readonly string VIA = "HTTP_VIA";
-            public static readonly string X_FORWARDED_FOR = "HTTP_X_FORWARDED_FOR";
-            public static readonly string REMOTE_ADDR = "REMOTE_ADDR";
-            public static readonly string CDN_SRC_IP = "HTTP_CDN_SRC_IP";
+            HttpHeadString()
+            {
+
+            }
+
+            public const string VIA = "HTTP_VIA";
+            public const string X_FORWARDED_FOR = "HTTP_X_FORWARDED_FOR";
+            public const string REMOTE_ADDR = "REMOTE_ADDR";
+            public const string CDN_SRC_IP = "HTTP_CDN_SRC_IP";
         }
     }
 }

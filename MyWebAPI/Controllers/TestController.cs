@@ -56,7 +56,7 @@ namespace MyWebAPI.Controllers
         [HttpPost]
         public bool PostInfoByArgs([FromBody] IList<TestEntity> value)
         {
-            if (value == null || value.Count == 0) throw new ArgumentNullException("参数不可为空", nameof(value));
+            if (value == null || value.Count == 0) throw new ArgumentNullException(nameof(value), "参数不可为空");
 
             return value.Count < 3;
         }

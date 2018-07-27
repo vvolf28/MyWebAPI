@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
@@ -7,7 +8,7 @@ namespace MyWebAPI.Filters
     /// <summary>
     /// 自定义过滤器工具类
     /// </summary>
-    public class FilterUtils
+    public static class FilterUtils
     {
         /// <summary>
         /// 获取请求名称
@@ -16,6 +17,8 @@ namespace MyWebAPI.Filters
         /// <returns>请求接口的完整名称</returns>
         public static string GetActionFullName(HttpActionExecutedContext actionExecutedContext)
         {
+            if (actionExecutedContext == null) throw new ArgumentNullException(nameof(actionExecutedContext), "请求上下文操作不可为空!");
+
             return GetActionFullName(actionExecutedContext.ActionContext);
         }
 
@@ -26,6 +29,8 @@ namespace MyWebAPI.Filters
         /// <returns>请求接口的完整名称</returns>
         public static string GetActionFullName(HttpActionContext actionContext)
         {
+            if (actionContext == null) throw new ArgumentNullException(nameof(actionContext), "请求上下文操作不可为空!");
+
             return $"{actionContext.ActionDescriptor.ControllerDescriptor.ControllerName}/{actionContext.ActionDescriptor.ActionName}";
         }
 
@@ -37,6 +42,8 @@ namespace MyWebAPI.Filters
         /// <returns>Json格式的请求对象参数</returns>
         public static string GetRequestArgsJson(HttpActionExecutedContext actionExecutedContext)
         {
+            if (actionExecutedContext == null) throw new ArgumentNullException(nameof(actionExecutedContext), "请求上下文操作不可为空!");
+
             return GetRequestArgsJson(actionExecutedContext.ActionContext);
         }
 
@@ -47,6 +54,8 @@ namespace MyWebAPI.Filters
         /// <returns>Json格式的请求对象参数</returns>
         public static string GetRequestArgsJson(HttpActionContext actionContext)
         {
+            if (actionContext == null) throw new ArgumentNullException(nameof(actionContext), "请求上下文操作不可为空!");
+
             return JsonEx.ToJson(actionContext.ActionArguments);
         }
 
@@ -57,6 +66,8 @@ namespace MyWebAPI.Filters
         /// <returns>输出内容对象</returns>
         public static object GetResponseContent(HttpActionExecutedContext actionExecutedContext)
         {
+            if (actionExecutedContext == null) throw new ArgumentNullException(nameof(actionExecutedContext), "请求上下文操作不可为空!");
+
             return GetResponseContent(actionExecutedContext.ActionContext);
         }
 
@@ -67,6 +78,8 @@ namespace MyWebAPI.Filters
         /// <returns>输出内容对象</returns>
         public static object GetResponseContent(HttpActionContext actionContext)
         {
+            if (actionContext == null) throw new ArgumentNullException(nameof(actionContext), "请求上下文操作不可为空!");
+
             return actionContext.Response.Content?.ReadAsAsync<object>().Result;
         }
     }
