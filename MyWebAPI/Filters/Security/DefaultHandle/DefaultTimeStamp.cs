@@ -11,7 +11,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <summary>
         /// 超时时间(分钟)
         /// </summary>
-        private static int m_OverTimeForMinute = 2;
+        private static readonly int m_OverTimeForMinute = 1;
         
         /// <summary>
         /// 验证时间戳是否超时

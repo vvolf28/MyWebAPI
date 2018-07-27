@@ -33,12 +33,26 @@ namespace MyWebAPI.Filters
             var data = FilterUtils.GetResponseContent(actionExecutedContext);
             var result = new ResultModel<object>(data);
 
-            var status = actionExecutedContext.ActionContext.Response.StatusCode;
-            if (status == HttpStatusCode.NoContent) status = HttpStatusCode.OK;
+            var status = GetResponseStatus(actionExecutedContext);
             actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(status, result);
 
             return result;
         }
+
+
+        /// <summary>
+        /// 获取输出响应状态
+        /// </summary>
+        /// <param name="actionExecutedContext">请求上下文操作</param>
+        /// <returns>输出响应状态</returns>
+        private HttpStatusCode GetResponseStatus(HttpActionExecutedContext actionExecutedContext)
+        {
+            var status = actionExecutedContext.ActionContext.Response.StatusCode;
+            if (status == HttpStatusCode.NoContent) status = HttpStatusCode.OK;
+
+            return status;
+        }
+
 
         /// <summary>
         /// 记录API请求日志

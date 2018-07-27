@@ -23,10 +23,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// </summary>
         public DefaultRegister()
         {
-            var cfgPath = HttpContext.Current.Server.MapPath("~/App_Data\\RegisterInfo.json");
-            if (!File.Exists(cfgPath)) throw new Exception("配置文件不存在或文件路径错误!");
-
-            var registerInfos = JsonEx.FromJson<List<RegisterInfo>>(File.ReadAllText(cfgPath));
+            var registerInfos = GetConfigFromFile();
 
             if (registerInfos == null)
             {
@@ -37,6 +34,16 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
                 m_Cache = registerInfos.ToDictionary(p => p.AppId);
             }
         }
+
+
+        private List<RegisterInfo> GetConfigFromFile()
+        {
+            var cfgPath = HttpContext.Current.Server.MapPath("~/App_Data\\RegisterInfo.json");
+            if (!File.Exists(cfgPath)) throw new Exception("配置文件不存在或文件路径错误!");
+
+            return JsonEx.FromJson<List<RegisterInfo>>(File.ReadAllText(cfgPath));
+        }
+
 
         /// <summary>
         /// 获取注册信息

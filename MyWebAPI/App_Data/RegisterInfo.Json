@@ -1,0 +1,18 @@
+﻿[
+  {
+    "appId": "c037e0a7cad7434f803754ceadb8bcc9",
+    "appSecret": "20bfc6295f224c00a3e2ce3c29c68f64",
+    "accessIpList": [
+      "127.0.0.1",
+      "192.168.47.128"
+    ]
+  },
+  {
+    "appId": "ad9a8977289743a89a807165337f48bc",
+    "appSecret": "c623b9da7f71493ca10eef596baccb0c",
+    "accessIpList": [
+      "127.0.0.1",
+      "192.168.0.1"
+    ]
+  }
+]

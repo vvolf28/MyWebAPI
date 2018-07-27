@@ -1,7 +1,6 @@
 ﻿using MyWebAPI.Filters.Security.Interface;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -18,36 +17,40 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <param name="accessIpList">授权Ip地址列表</param>
         public void Validate(List<string> accessIpList)
         {
-            var ip = GetRequestIpAddress();
+            //访问控制列表为空时，默认为不做ip校验
             if (accessIpList == null || accessIpList.Count == 0) return;
 
+            var ip = GetRealRequestIp();
             if (!accessIpList.Contains(ip)) throw new Exception("非法Ip地址访问!");
         }
 
+
         /// <summary>
-        /// 获取请求来源的Ip地址
+        /// 获取真实请求来源的Ip地址
         /// </summary>
         /// <returns>请求者的Ip地址字符串格式</returns>
-        private string GetRequestIpAddress()
+        private string GetRealRequestIp()
         {
-            var clientIp = GetRequestServerVariable("REMOTE_ADDR");
-            if (string.IsNullOrWhiteSpace(clientIp) && !string.IsNullOrWhiteSpace(GetRequestServerVariable("HTTP_VIA")))
-            {
-                clientIp = GetRequestServerVariable("HTTP_X_FORWARDED_FOR");
-                if (!string.IsNullOrWhiteSpace(clientIp))
-                {
-                    var tmp = clientIp.Split(',');
-                    if (tmp.Length > 0)
-                    {
-                        clientIp = tmp[0].Trim();
-                    }
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(clientIp)) clientIp = HttpContext.Current.Request.UserHostAddress;
-            if (string.IsNullOrWhiteSpace(clientIp) || !IsIpAddress(clientIp)) return "127.0.0.1";
+            var clientIp = GetClientIpHandle(GetClientIpWithProxy);
+            if (string.IsNullOrWhiteSpace(clientIp)) clientIp = GetClientIpHandle(GetClientIpWithoutProxy);
+            if (string.IsNullOrWhiteSpace(clientIp)) clientIp = GetClientIpHandle(GetClientIpByUserHost);
+            if (string.IsNullOrWhiteSpace(clientIp)) clientIp = "127.0.0.1";
 
             return clientIp;
+        }
+
+
+        private string GetClientIpHandle(Func<string> getHandle)
+        {
+            var clientIp = getHandle();
+            if (IsIpAddress(clientIp))
+            {
+                return clientIp;
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
 
@@ -84,16 +87,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
             var ipList = ipListStr.Split(',');
             if (ipList.Length < 1) return string.Empty;
 
-            var clientIp = ipList[0].Trim();
-
-            if(IsIpAddress(clientIp))
-            {
-                return clientIp;
-            }
-            else
-            {
-                return string.Empty;
-            }
+            return ipList[0].Trim();
         }
 
 
@@ -109,7 +103,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// </remarks>
         private string GetClientIpWithoutProxy()
         {
-            return GetRequestServerVariable(HttpHeadString.REMOTE_ADDR);
+           return GetRequestServerVariable(HttpHeadString.REMOTE_ADDR);
         }
 
 
@@ -121,12 +115,22 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         {
             return GetRequestServerVariable(HttpHeadString.CDN_SRC_IP);
         }
-
         
+
         /// <summary>
-        /// 
+        /// 从UserHostAddress获取客户IP
         /// </summary>
-        /// <param name="varName"></param>
+        /// <returns></returns>
+        private string GetClientIpByUserHost()
+        {
+            return HttpContext.Current.Request.UserHostAddress;
+        }
+
+
+        /// <summary>
+        /// 从Http请求中获取指定环境变量的值
+        /// </summary>
+        /// <param name="varName">环境变量名称</param>
         /// <returns></returns>
         private string GetRequestServerVariable(string varName)
         {

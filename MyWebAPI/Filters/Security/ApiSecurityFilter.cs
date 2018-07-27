@@ -4,17 +4,17 @@ using System.Web.Http.Filters;
 namespace MyWebAPI.Filters.Security
 {
     /// <summary>
-    /// Api安全校验过滤器
+    /// Api安全校验拦截器
     /// </summary>
     public class ApiSecurityFilter : ActionFilterAttribute
     {
         /// <summary>
-        /// Api接口调用时处理
+        /// WebApi 安全认证拦截(在调用操作方法之前发生)
         /// </summary>
-        /// <param name="context"></param>
-        public override void OnActionExecuting(HttpActionContext context)
+        /// <param name="actionContext">操作上下文</param>
+        public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            var requetInfo = ValidateFactory.SecurityInstance.GetSecurityInfo(context);
+            var requetInfo = ValidateFactory.SecurityInstance.GetSecurityInfo(actionContext);
             var registerInfo = ValidateFactory.RegisterInstance.GetRegister(requetInfo.AppId);
 
             ValidateFactory.TimeStampInstance.Validate(requetInfo.TimeStamp);

@@ -1,4 +1,5 @@
 ﻿using MyWebAPI.Filters;
+using MyWebAPI.Filters.Security;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -34,9 +35,9 @@ namespace MyWebAPI
 
 
             #region 注册全局过滤器
+            config.Filters.Add(new ApiSecurityFilter());
             //RequestFilter暂不使用。出入参数统一由ResponseFilter进行处理
             //config.Filters.Add(new RequestFilter()); 
-
             config.Filters.Add(new ExceptionFilter());
             config.Filters.Add(new ResponseFilter());
             #endregion

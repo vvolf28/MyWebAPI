@@ -48,10 +48,23 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         public void Validate(SecurityRequestInfo securityInfo, RegisterInfo registerInfo)
         {
             this.ValidateSecurityInfo(securityInfo);
-            var content = $"{securityInfo.AppId}{securityInfo.TimeStamp}{securityInfo.RequestContent}{registerInfo.AppSecret}";
-            var sign = GetMD5(content);
+            var sign = CreatSingData(securityInfo, registerInfo);
             if (sign != securityInfo.Signature) throw new Exception("签名验证错误!");
         }
+
+
+        /// <summary>
+        /// 根据请求内容及注册信息，生成签名数据
+        /// </summary>
+        /// <param name="securityInfo">安全信息实体</param>
+        /// <param name="registerInfo">注册信息实体</param>
+        /// <returns></returns>
+        private string CreatSingData(SecurityRequestInfo securityInfo, RegisterInfo registerInfo)
+        {
+            var content = $"{securityInfo.AppId}{securityInfo.TimeStamp}{securityInfo.RequestContent}{registerInfo.AppSecret}";
+            return GetMD5(content);
+        }
+
 
         /// <summary>
         /// 验证安全信息数据完整性

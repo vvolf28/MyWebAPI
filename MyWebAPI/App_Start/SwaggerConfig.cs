@@ -61,7 +61,7 @@ namespace MyWebAPI
                         //c.BasicAuth("basic")
                         //    .Description("Basic HTTP Authentication");
                         //
-						// NOTE: You must also configure 'EnableApiKeySupport' below in the SwaggerUI section
+                        // NOTE: You must also configure 'EnableApiKeySupport' below in the SwaggerUI section
                         //c.ApiKey("apiKey")
                         //    .Description("API Key Authentication")
                         //    .Name("apiKey")
@@ -252,7 +252,9 @@ namespace MyWebAPI
                     });
         }
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SwaggerConfig.GetXmlCommentsPath()'
         protected static string GetXmlCommentsPath()
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SwaggerConfig.GetXmlCommentsPath()'
         {
             return $"{System.AppDomain.CurrentDomain.BaseDirectory}\\bin\\{typeof(SwaggerConfig).Assembly.GetName().Name}.XML";
         }

@@ -1,90 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace MyWebAPI.Controllers
 {
+    /// <summary>
+    /// 测试Api控制器
+    /// </summary>
     public class TestController : ApiController
     {
         /// <summary>
-        /// 测试GetUser
+        /// 
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<string> GetUser()
+        public List<TestEntity> GetInfoByNoArgs()
         {
-            return new string[] { "value1", "value2" };
+            return new List<TestEntity>()
+            {
+                new TestEntity(){Name = "Name-1", Age = 11, IdCardNo="12345" },
+                new TestEntity(){Name = "Name-2", Age = 21, IdCardNo="54321" },
+                new TestEntity(){Name = "Name-3", Age = 31, IdCardNo="67890" },
+            };
         }
 
 
         /// <summary>
-        /// 测试GetEmpty
+        /// GetInfoByArgs
         /// </summary>
+        /// <param name="name"></param>
+        /// <param name="age"></param>
+        /// <param name="idCardNo"></param>
         /// <returns></returns>
         [HttpGet]
-        public void GetEmpty()
+        public TestEntity GetInfoByArgs(string name, int age, string idCardNo)
         {
-            
-        }
-
-
-
-        /// <summary>
-        /// 测试Post
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public void PostUser([FromBody]string value)
-        {
+            return new TestEntity() { Name = name, IdCardNo = idCardNo, Age = age };
         }
 
 
         /// <summary>
-        /// 测试无参数Post方法
+        /// PostInfoByNoArgs
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public void PostNoArgs()
+        public bool PostInfoByNoArgs()
         {
-        }
-
-
-        /// <summary>
-        /// 新增空用户
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public void AddEmptyUser([FromBody]string msg)
-        {
-            var id = Guid.NewGuid().ToString();
-        }
-
-
-        [HttpPost]
-        public string AddTest([FromBody] int number)
-        {
-            if(number >= 0)
-            {
-                return $"Success: number is {number}";
-            }
-            else
-            {
-                throw new Exception($"error: number is {number}");
-            }
-                
+            return true;
         }
 
         /// <summary>
-        /// 测试Delete
+        /// PostInfoByArgs
         /// </summary>
-        /// <returns></returns>
-        [HttpDelete]
-        public void DeleteUser([FromBody]int id)
+        /// <param name="value"></param>
+        [HttpPost]
+        public bool PostInfoByArgs([FromBody] IList<TestEntity> value)
         {
-            throw new Exception("id is error");
+            if (value == null || value.Count == 0) throw new ArgumentNullException("参数不可为空", nameof(value));
+
+            return value.Count < 3;
+        }
+
+
+        public class TestEntity
+        {
+            public string Name { get; set; }
+
+            public int Age { get; set; }
+
+            public string IdCardNo { get; set; }
         }
     }
 }
