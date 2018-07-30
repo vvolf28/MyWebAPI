@@ -62,6 +62,8 @@ namespace MyWebAPI.Filters.Security
         /// <returns></returns>
         private static string GetClientIpHandle(Func<string> getHandle)
         {
+            if (getHandle == null) return string.Empty;
+
             var clientIp = getHandle();
             if (IsIpAddress(clientIp))
             {
