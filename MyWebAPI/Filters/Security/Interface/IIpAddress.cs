@@ -5,12 +5,12 @@ namespace MyWebAPI.Filters.Security.Interface
     /// <summary>
     /// 授权Ip地址接口
     /// </summary>
-    public interface IIpAddress
+    public interface IIPAddress
     {
         /// <summary>
         /// 验证Ip是否合法
         /// </summary>
-        /// <param name="accessIpList">授权Ip地址列表</param>
-        void Validate(List<string> accessIpList);
+        /// <param name="accessIPList">授权Ip地址列表</param>
+        void Validate(IList<string> accessIPList);
     }
 }

@@ -7,9 +7,10 @@ using System.Web.Http.Filters;
 namespace MyWebAPI.Filters
 {
     /// <summary>
-    /// 全局异常拦截器
+    /// 异常拦截器
     /// </summary>
-    public class ExceptionFilter : ExceptionFilterAttribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    public sealed class ExceptionFilter : ExceptionFilterAttribute
     {
         /// <summary>
         /// 重写异常处理机制(同步)
@@ -25,7 +26,7 @@ namespace MyWebAPI.Filters
         /// 重写输出流内容
         /// </summary>
         /// <param name="actionExecutedContext">执行的上下文的操作</param>
-        private void ReWriteResponseContent(HttpActionExecutedContext actionExecutedContext)
+        private static void ReWriteResponseContent(HttpActionExecutedContext actionExecutedContext)
         {
             var result = new ResultModel<Exception>(actionExecutedContext.Exception);
             actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(HttpStatusCode.OK, result);
@@ -35,7 +36,7 @@ namespace MyWebAPI.Filters
         /// 记录异常日志
         /// </summary>
         /// <param name="actionExecutedContext">执行的上下文的操作</param>
-        private void LoggerExceptionInfo(HttpActionExecutedContext actionExecutedContext)
+        private static void LoggerExceptionInfo(HttpActionExecutedContext actionExecutedContext)
         {
             var actionName = FilterUtils.GetActionFullName(actionExecutedContext);
             var args = FilterUtils.GetRequestArgsJson(actionExecutedContext);

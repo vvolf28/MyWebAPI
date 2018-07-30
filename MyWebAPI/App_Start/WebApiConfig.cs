@@ -19,6 +19,8 @@ namespace MyWebAPI
         /// <param name="config"></param>
         public static void Register(HttpConfiguration config)
         {
+            if (config == null) throw new ArgumentNullException(nameof(config));
+
             // Web API 配置和服务
 
             // Web API 路由

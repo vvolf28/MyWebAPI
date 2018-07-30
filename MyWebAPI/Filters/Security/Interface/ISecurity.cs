@@ -1,5 +1,4 @@
-﻿using MyWebAPI.Filters.Security.Entity;
-using System.Web.Http.Controllers;
+﻿using System.Web.Http.Controllers;
 
 namespace MyWebAPI.Filters.Security.Interface
 {

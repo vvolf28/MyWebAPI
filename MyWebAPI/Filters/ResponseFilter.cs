@@ -9,7 +9,8 @@ namespace MyWebAPI.Filters
     /// <summary>
     /// Response拦截器
     /// </summary>
-    public class ResponseFilter : ActionFilterAttribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    public sealed class ResponseFilter : ActionFilterAttribute
     {
         /// <summary>
         /// 重写调用后请求(同步)
@@ -17,6 +18,8 @@ namespace MyWebAPI.Filters
         /// <param name="actionExecutedContext">请求上下文操作</param>
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
+            if (actionExecutedContext == null) throw new ArgumentNullException(nameof(actionExecutedContext));
+
             if (actionExecutedContext.Exception != null) return;
 
             var result = ReWriteResponseContent(actionExecutedContext);
@@ -28,7 +31,7 @@ namespace MyWebAPI.Filters
         /// </summary>
         /// <param name="actionExecutedContext">请求上下文操作</param>
         /// <returns>统一返回值对象</returns>
-        private ResultModel<object> ReWriteResponseContent(HttpActionExecutedContext actionExecutedContext)
+        private static ResultModel<object> ReWriteResponseContent(HttpActionExecutedContext actionExecutedContext)
         {
             var data = FilterUtils.GetResponseContent(actionExecutedContext);
             var result = new ResultModel<object>(data);
@@ -45,7 +48,7 @@ namespace MyWebAPI.Filters
         /// </summary>
         /// <param name="actionExecutedContext">请求上下文操作</param>
         /// <returns>输出响应状态</returns>
-        private HttpStatusCode GetResponseStatus(HttpActionExecutedContext actionExecutedContext)
+        private static HttpStatusCode GetResponseStatus(HttpActionExecutedContext actionExecutedContext)
         {
             var status = actionExecutedContext.ActionContext.Response.StatusCode;
             if (status == HttpStatusCode.NoContent) status = HttpStatusCode.OK;
@@ -59,7 +62,7 @@ namespace MyWebAPI.Filters
         /// </summary>
         /// <param name="actionExecutedContext">请求上下文操作</param>
         /// <param name="result">请求返回值</param>
-        private void LoggerActionExecInfo(HttpActionExecutedContext actionExecutedContext, ResultModel<object> result)
+        private static void LoggerActionExecInfo(HttpActionExecutedContext actionExecutedContext, ResultModel<object> result)
         {
             var actionName = FilterUtils.GetActionFullName(actionExecutedContext);
             var args = FilterUtils.GetRequestArgsJson(actionExecutedContext);

@@ -1,7 +1,7 @@
-﻿using MyWebAPI.Filters.Security.Entity;
-using MyWebAPI.Filters.Security.Interface;
+﻿using MyWebAPI.Filters.Security.Interface;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http.Controllers;
 
-namespace MyWebAPI.Filters.Security.DefaultHandle
+namespace MyWebAPI.Filters.Security
 {
     /// <summary>
     /// 默认安全认证
@@ -20,7 +20,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <summary>
         /// 字符集
         /// </summary>
-        private static readonly Encoding m_Encoding = Encoding.UTF8;
+        private static readonly Encoding s_Encoding = Encoding.UTF8;
 
         /// <summary>
         /// 获取安全认证信息
@@ -29,6 +29,8 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <returns>安全认证信息实体</returns>
         public SecurityRequestInfo GetSecurityInfo(HttpActionContext context)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context), "请求上下文不可为空!");
+
             var result = new SecurityRequestInfo
             {
                 AppId = GetHeaderVaule(context.Request.Headers, "appId"),
@@ -47,9 +49,12 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <param name="registerInfo">注册信息实体</param>
         public void Validate(SecurityRequestInfo securityInfo, RegisterInfo registerInfo)
         {
-            this.ValidateSecurityInfo(securityInfo);
+            if (securityInfo == null) throw new ArgumentNullException(nameof(securityInfo), "安全信息实体不可为空!");
+            if (registerInfo == null) throw new ArgumentNullException(nameof(registerInfo), "注册信息实体不可为空!");
+
+            ValidateSecurityInfo(securityInfo);
             var sign = CreatSingData(securityInfo, registerInfo);
-            if (sign != securityInfo.Signature) throw new Exception("签名验证错误!");
+            if (sign != securityInfo.Signature) throw new ArgumentException("签名验证错误!");
         }
 
 
@@ -59,7 +64,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <param name="securityInfo">安全信息实体</param>
         /// <param name="registerInfo">注册信息实体</param>
         /// <returns></returns>
-        private string CreatSingData(SecurityRequestInfo securityInfo, RegisterInfo registerInfo)
+        private static string CreatSingData(SecurityRequestInfo securityInfo, RegisterInfo registerInfo)
         {
             var content = $"{securityInfo.AppId}{securityInfo.TimeStamp}{securityInfo.RequestContent}{registerInfo.AppSecret}";
             return GetMD5(content);
@@ -70,11 +75,11 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// 验证安全信息数据完整性
         /// </summary>
         /// <param name="securityInfo">安全信息实体</param>
-        private void ValidateSecurityInfo(SecurityRequestInfo securityInfo)
+        private static void ValidateSecurityInfo(SecurityRequestInfo securityInfo)
         {
-            if (string.IsNullOrWhiteSpace(securityInfo.AppId)) throw new ArgumentNullException("AppId不可为空!", nameof(securityInfo.AppId));
-            if (string.IsNullOrWhiteSpace(securityInfo.Signature)) throw new ArgumentNullException("签名不可为空!", nameof(securityInfo.Signature));
-            if (string.IsNullOrWhiteSpace(securityInfo.TimeStamp)) throw new ArgumentNullException("时间戳不可为空!", nameof(securityInfo.TimeStamp));
+            if (string.IsNullOrWhiteSpace(securityInfo.AppId)) throw new ArgumentException("AppId不可为空!");
+            if (string.IsNullOrWhiteSpace(securityInfo.Signature)) throw new ArgumentException("签名不可为空!");
+            if (string.IsNullOrWhiteSpace(securityInfo.TimeStamp)) throw new ArgumentException("时间戳不可为空!");
         }
 
         /// <summary>
@@ -83,15 +88,16 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <param name="headers">请求头</param>
         /// <param name="name">名称</param>
         /// <returns>请求头中名称对应的值</returns>
-        private string GetHeaderVaule(HttpRequestHeaders headers, string name)
+        private static string GetHeaderVaule(HttpRequestHeaders headers, string name)
         {
             if (headers == null) return string.Empty;
 
             var isExists = headers.TryGetValues(name, out IEnumerable<string> values);
-            if (!isExists) return string.Empty;
 
-            var tmp = values.ToList();
-            return tmp.Count == 1 ? tmp[0] : string.Empty;
+            if (!isExists) return string.Empty;
+            if (values.Count() > 1) throw new ArgumentException("HttpHead对应名称存在多个值!", name);
+
+            return values?.First();
         }
 
 
@@ -101,12 +107,12 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// </summary>
         /// <param name="context">请求上下文</param>
         /// <returns>数据内容</returns>
-        private string GetRequestData(HttpActionContext context)
+        private static string GetRequestData(HttpActionContext context)
         {
-            if (context.Request.Method == HttpMethod.Post) return this.GetPostData(context);
-            if (context.Request.Method == HttpMethod.Get) return this.GetUrlData(context);
+            if (context.Request.Method == HttpMethod.Post) return GetPostData(context);
+            if (context.Request.Method == HttpMethod.Get) return GetUrlData(context);
 
-            throw new Exception("请求类型错误!");
+            throw new HttpRequestException("请求类型错误!");
         }
 
         /// <summary>
@@ -114,9 +120,9 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// </summary>
         /// <param name="context">请求上下文</param>
         /// <returns>Post请求数据,字符串格式</returns>
-        private string GetPostData(HttpActionContext context)
+        private static string GetPostData(HttpActionContext context)
         {
-            return context.Request.Content.ReadAsStringAsync().Result;
+            return context.Request.Content?.ReadAsStringAsync().Result;
         }
 
         /// <summary>
@@ -124,7 +130,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// </summary>
         /// <param name="context">请求上下文</param>
         /// <returns>Get请求数据，字符串格式</returns>
-        private string GetUrlData(HttpActionContext context)
+        private static string GetUrlData(HttpActionContext context)
         {
             var request = ((HttpContextWrapper)context.Request.Properties["MS_HttpContext"]).Request;
             return request.QueryString.ToString();
@@ -141,9 +147,11 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <returns>MD5值</returns>
         private static string GetMD5(string data)
         {
-            var md5 = MD5.Create();
-            var buffer = md5.ComputeHash(m_Encoding.GetBytes(data));
-            return GetHexString(buffer);
+            using (var md5 = MD5.Create())
+            {
+                var buffer = md5.ComputeHash(s_Encoding.GetBytes(data));
+                return GetHexString(buffer);
+            }
         }
 
 
@@ -154,7 +162,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         /// <returns>16进制的小写格式字符串</returns>
         private static string GetHexString(byte[] buffer)
         {
-            return BitConverter.ToString(buffer).Replace("-", "").ToLower();
+            return BitConverter.ToString(buffer).Replace("-", "").ToLower(CultureInfo.CurrentCulture);
         }
 
         #endregion

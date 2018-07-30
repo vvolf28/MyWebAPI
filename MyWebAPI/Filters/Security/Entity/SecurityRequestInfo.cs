@@ -1,4 +1,4 @@
-﻿namespace MyWebAPI.Filters.Security.Entity
+﻿namespace MyWebAPI.Filters.Security
 {
     /// <summary>
     /// 请求安全信息

@@ -1,12 +1,14 @@
-﻿using System.Web.Http.Controllers;
+﻿using System;
+using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
 namespace MyWebAPI.Filters
 {
     /// <summary>
-    /// 统一API返回值处理
+    /// API返回值处理
     /// </summary>
-    public class RequestFilter : ActionFilterAttribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    public sealed class RequestFilter : ActionFilterAttribute
     {
         /// <summary>
         /// 重写调用前请求(同步)

@@ -25,23 +25,36 @@ namespace MyWebAPI.Models
         /// </summary>
         public T Data { get; set; }
 
-        
+
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="data"></param>
         public ResultModel(T data)
         {
-            if(data is Exception)
-            {
-                IsSuccess = false;
-                Error = (data as Exception)?.Message;
-            }
-            else
-            {
-                IsSuccess = true;
-                Data = data ;
-            }
+            IsSuccess = true;
+            Data = data;
+
+            //if (data is Exception)
+            //{
+            //    IsSuccess = false;
+            //    Error = (data as Exception)?.Message;
+            //}
+            //else
+            //{
+            //    IsSuccess = true;
+            //    Data = data ;
+            //}
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        public ResultModel(Exception data)
+        {
+            IsSuccess = false;
+            Error = data?.Message;
         }
     }
 }

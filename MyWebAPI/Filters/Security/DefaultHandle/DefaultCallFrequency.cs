@@ -1,6 +1,6 @@
 ﻿using MyWebAPI.Filters.Security.Interface;
 
-namespace MyWebAPI.Filters.Security.DefaultHandle
+namespace MyWebAPI.Filters.Security
 {
     /// <summary>
     /// 默认调用频率验证

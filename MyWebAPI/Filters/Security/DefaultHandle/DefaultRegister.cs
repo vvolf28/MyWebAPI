@@ -1,12 +1,11 @@
-﻿using MyWebAPI.Filters.Security.Entity;
-using MyWebAPI.Filters.Security.Interface;
+﻿using MyWebAPI.Filters.Security.Interface;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 
-namespace MyWebAPI.Filters.Security.DefaultHandle
+namespace MyWebAPI.Filters.Security
 {
     /// <summary>
     /// 默认注册信息操作
@@ -25,21 +24,14 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
         {
             var registerInfos = GetConfigFromFile();
 
-            if (registerInfos == null)
-            {
-                m_Cache = new Dictionary<string, RegisterInfo>();
-            }
-            else
-            {
-                m_Cache = registerInfos.ToDictionary(p => p.AppId);
-            }
+            m_Cache = registerInfos?.ToDictionary(p => p.AppId);
         }
 
 
-        private List<RegisterInfo> GetConfigFromFile()
+        private static List<RegisterInfo> GetConfigFromFile()
         {
             var cfgPath = HttpContext.Current.Server.MapPath("~/App_Data\\RegisterInfo.json");
-            if (!File.Exists(cfgPath)) throw new Exception("配置文件不存在或文件路径错误!");
+            if (!File.Exists(cfgPath)) throw new FileNotFoundException("配置文件不存在或文件路径错误!", cfgPath);
 
             return JsonEx.FromJson<List<RegisterInfo>>(File.ReadAllText(cfgPath));
         }
@@ -60,7 +52,7 @@ namespace MyWebAPI.Filters.Security.DefaultHandle
             }
             else
             {
-                throw new Exception("未注册的接入者!");
+                throw new ArgumentException("未注册的接入者!");
             }
         }
     }
